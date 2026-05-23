@@ -1,0 +1,17 @@
+# Tránh copy file thừa vào build context (tăng tốc build)
+.git
+.gitignore
+.venv
+.uv-cache
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+.ruff_cache
+docs/
+tests/
+.env*
+!.env.example
+*.md
+!README.md
+docker-compose*.yml
