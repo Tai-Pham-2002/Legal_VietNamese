@@ -21,9 +21,9 @@ from typing import Any
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from langgraph.graph import END, START, StateGraph
 
-from Legal_VietNamese.src.core.logging import get_logger
-from Legal_VietNamese.src.core.settings import get_settings
-from Legal_VietNamese.src.llm.client import get_llm
+from src.core.logging import get_logger
+from src.core.settings import get_settings
+from src.llm.client import get_llm
 
 from .nodes.generate import generate_node
 from .nodes.memory import load_memory_node

@@ -9,7 +9,7 @@ from sqlalchemy import Boolean, DateTime, ForeignKey, Index, String, UniqueConst
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from Legal_VietNamese.src.core.db import Base
+from src.core.db import Base
 
 from ._mixins import TimestampMixin, uuid_pk
 

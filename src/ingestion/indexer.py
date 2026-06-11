@@ -10,12 +10,12 @@ import uuid
 
 from qdrant_client.http import models as qm
 
-from Legal_VietNamese.src.core.logging import get_logger
-from Legal_VietNamese.src.core.qdrant import get_qdrant
-from Legal_VietNamese.src.core.settings import get_settings
-from Legal_VietNamese.src.db.models import DocumentChunk
-from Legal_VietNamese.src.ingestion.chunkers import Chunk
-from Legal_VietNamese.src.llm.client import get_embedder
+from src.core.logging import get_logger
+from src.core.qdrant import get_qdrant
+from src.core.settings import get_settings
+from src.db.models import DocumentChunk
+from src.ingestion.chunkers import Chunk
+from src.llm.client import get_embedder
 
 log = get_logger(__name__)
 

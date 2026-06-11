@@ -9,7 +9,7 @@ from datetime import UTC, datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from Legal_VietNamese.src.db.models import RefreshToken, Tenant, User
+from src.db.models import RefreshToken, Tenant, User
 
 
 class UserRepo:

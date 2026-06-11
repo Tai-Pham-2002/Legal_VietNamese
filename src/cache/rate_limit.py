@@ -12,7 +12,7 @@ from __future__ import annotations
 import time
 import uuid
 
-from Legal_VietNamese.src.core.redis import get_redis
+from src.core.redis import get_redis
 
 
 class RateLimitExceeded(Exception):

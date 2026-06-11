@@ -32,7 +32,6 @@ RUN uv venv /opt/venv \
 # `readme = "README.md"` and hatchling validates the file exists when uv
 # installs the project itself (the second `uv sync` below).
 COPY src ./src
-COPY scripts ./scripts
 COPY README.md alembic.ini ./
 
 RUN uv sync --frozen --no-dev || uv sync --no-dev
@@ -55,7 +54,6 @@ WORKDIR /app
 # Bring venv + source from builder
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app/src /app/src
-COPY --from=builder /app/scripts /app/scripts
 COPY pyproject.toml alembic.ini ./
 
 RUN chown -R appuser:appuser /app

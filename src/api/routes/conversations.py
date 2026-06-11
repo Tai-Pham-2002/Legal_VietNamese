@@ -6,7 +6,7 @@ import uuid
 
 from fastapi import APIRouter, HTTPException, Query, status
 
-from Legal_VietNamese.src.db.repositories import ConversationRepo
+from src.db.repositories import ConversationRepo
 
 from ..deps import CurrentUserDep, SessionDep
 from ..schemas import (

@@ -18,11 +18,11 @@ import orjson
 from fastapi import APIRouter, Depends, HTTPException, status
 from sse_starlette.sse import EventSourceResponse
 
-from Legal_VietNamese.src.agent import run_agent_stream
-from Legal_VietNamese.src.core.db import session_scope
-from Legal_VietNamese.src.core.logging import get_logger
-from Legal_VietNamese.src.db.repositories import ConversationRepo
-from Legal_VietNamese.src.memory.short_term import append_message, get_buffer, warmup_from_db
+from src.agent import run_agent_stream
+from src.core.db import session_scope
+from src.core.logging import get_logger
+from src.db.repositories import ConversationRepo
+from src.memory.short_term import append_message, get_buffer, warmup_from_db
 
 from ..deps import CurrentUserDep, SessionDep, get_arq_pool, rate_limit
 from ..schemas import ChatRequest

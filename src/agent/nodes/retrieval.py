@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from Legal_VietNamese.src.observability.langfuse import observe
-from Legal_VietNamese.src.retrieval import retrieve_and_rerank
+from src.observability.langfuse import observe
+from src.retrieval import retrieve_and_rerank
 
 from ..state import AgentState
 

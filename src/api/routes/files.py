@@ -29,11 +29,11 @@ from fastapi import (
 )
 from sse_starlette.sse import EventSourceResponse
 
-from Legal_VietNamese.src.core.logging import get_logger
-from Legal_VietNamese.src.core.minio import put_object
-from Legal_VietNamese.src.core.redis import get_redis
-from Legal_VietNamese.src.core.settings import get_settings
-from Legal_VietNamese.src.db.repositories import DocumentRepo
+from src.core.logging import get_logger
+from src.core.minio import put_object
+from src.core.redis import get_redis
+from src.core.settings import get_settings
+from src.db.repositories import DocumentRepo
 
 from ..deps import (
     CurrentUserDep,
@@ -86,6 +86,7 @@ async def upload_files(
     repo = DocumentRepo(session)
     out_docs = []
     job_ids: list[str] = []
+    to_enqueue: list[str] = []  # doc_id mới — enqueue SAU khi commit
     max_bytes = s.app.max_upload_size_mb * 1024 * 1024
 
     for up in files:
@@ -131,13 +132,18 @@ async def upload_files(
         # gán ID đã sinh trong session — repo.create đã trả đối tượng có id.
         await session.flush()
 
-        job = await arq.enqueue_job("process_document", str(d.id))
+        to_enqueue.append(str(d.id))
+        out_docs.append(_doc_to_out(d))
+
+    # Commit TRƯỚC khi enqueue: worker chạy trên connection khác, nếu enqueue
+    # trước commit thì worker có thể đọc DB và không thấy row (job fail/race).
+    await session.commit()
+
+    for doc_id_str in to_enqueue:
+        job = await arq.enqueue_job("process_document", doc_id_str)
         if job is not None:
             job_ids.append(job.job_id)
 
-        out_docs.append(_doc_to_out(d))
-
-    await session.commit()
     return UploadResponse(documents=out_docs, job_ids=job_ids)
 
 

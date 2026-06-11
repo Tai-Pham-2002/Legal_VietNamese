@@ -9,8 +9,8 @@ Node này dùng cho non-streaming use case (eval, batch).
 
 from __future__ import annotations
 
-from Legal_VietNamese.src.llm.client import get_llm
-from Legal_VietNamese.src.observability.langfuse import observe
+from src.llm.client import get_llm
+from src.observability.langfuse import observe
 
 from ..prompts import build_answer_messages
 from ..state import AgentState

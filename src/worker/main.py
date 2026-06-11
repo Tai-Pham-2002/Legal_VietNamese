@@ -11,12 +11,12 @@ from typing import Any
 
 from arq.connections import RedisSettings
 
-from Legal_VietNamese.src.core.logging import setup_logging
-from Legal_VietNamese.src.core.qdrant import close_qdrant, ensure_collections
-from Legal_VietNamese.src.core.redis import close_redis
-from Legal_VietNamese.src.core.settings import get_settings
-from Legal_VietNamese.src.observability.langfuse import flush as lf_flush
-from Legal_VietNamese.src.observability.langfuse import init_langfuse
+from src.core.logging import setup_logging
+from src.core.qdrant import close_qdrant, ensure_collections
+from src.core.redis import close_redis
+from src.core.settings import get_settings
+from src.observability.langfuse import flush as lf_flush
+from src.observability.langfuse import init_langfuse
 
 from .tasks.ingestion import process_document
 from .tasks.memory import extract_facts

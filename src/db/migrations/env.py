@@ -7,9 +7,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from Legal_VietNamese.src.core.db import Base
-from Legal_VietNamese.src.core.settings import get_settings
-from Legal_VietNamese.src.db import models  # noqa: F401 — import để Base.metadata biết tất cả
+from src.core.db import Base
+from src.core.settings import get_settings
+from src.db import models  # noqa: F401 — import để Base.metadata biết tất cả
 
 config = context.config
 

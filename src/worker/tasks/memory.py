@@ -9,10 +9,10 @@ import json
 import uuid
 from typing import Any
 
-from Legal_VietNamese.src.core.db import session_scope
-from Legal_VietNamese.src.core.logging import get_logger
-from Legal_VietNamese.src.db.repositories import ConversationRepo
-from Legal_VietNamese.src.memory.long_term import save_fact
+from src.core.db import session_scope
+from src.core.logging import get_logger
+from src.db.repositories import ConversationRepo
+from src.memory.long_term import save_fact
 
 log = get_logger(__name__)
 
@@ -27,7 +27,7 @@ EXTRACTION_SYSTEM = """Bạn là trợ lý trích xuất "user facts" từ hội
 
 async def extract_facts(ctx: dict[str, Any], conversation_id_str: str) -> dict[str, Any]:
     """Trích xuất facts từ messages của conversation."""
-    from Legal_VietNamese.src.llm.client import get_llm  # avoid cycle at import time
+    from src.llm.client import get_llm  # avoid cycle at import time
 
     conv_id = uuid.UUID(conversation_id_str)
     log.info("memory_extraction_start", conv_id=str(conv_id))
@@ -39,7 +39,7 @@ async def extract_facts(ctx: dict[str, Any], conversation_id_str: str) -> dict[s
             return {"facts": 0}
         # Cần biết user/tenant
         # messages.conversation back-populates conversation -> dùng lookup riêng
-        from Legal_VietNamese.src.db.models import Conversation
+        from src.db.models import Conversation
 
         conv = await session.get(Conversation, conv_id)
         if conv is None:

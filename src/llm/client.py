@@ -25,9 +25,9 @@ from tenacity import (
     wait_exponential_jitter,
 )
 
-from Legal_VietNamese.src.core.logging import get_logger
-from Legal_VietNamese.src.core.redis import cache_get, cache_set, make_key
-from Legal_VietNamese.src.core.settings import get_settings
+from src.core.logging import get_logger
+from src.core.redis import cache_get, cache_set, make_key
+from src.core.settings import get_settings
 
 log = get_logger(__name__)
 
@@ -213,8 +213,13 @@ class EmbeddingClient:
 
                 @_retry(self._s.llm_max_retries)
                 async def _call(b: list[str]) -> list[list[float]]:
+                    # `dimensions`: rút gọn output về embedding_dim (gemini-embedding-001
+                    # mặc định 3072) để khớp dim của Qdrant collection.
                     resp = await self._client.embeddings.create(
-                        model=self.model, input=b, encoding_format="float"
+                        model=self.model,
+                        input=b,
+                        encoding_format="float",
+                        dimensions=self._s.embedding_dim,
                     )
                     return [d.embedding for d in resp.data]
 

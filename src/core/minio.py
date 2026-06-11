@@ -13,7 +13,7 @@ import asyncio
 import io
 from typing import Any
 
-from Legal_VietNamese.src.core.minio import Minio
+from minio import Minio
 from minio.error import S3Error
 
 from .logging import get_logger

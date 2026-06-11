@@ -9,7 +9,7 @@ from typing import Any
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from Legal_VietNamese.src.db.models import Conversation, Message
+from src.db.models import Conversation, Message
 
 
 class ConversationRepo:

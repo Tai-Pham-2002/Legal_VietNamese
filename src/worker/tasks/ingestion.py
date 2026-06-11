@@ -15,14 +15,14 @@ from typing import Any
 
 import orjson
 
-from Legal_VietNamese.src.core.db import session_scope
-from Legal_VietNamese.src.core.logging import get_logger
-from Legal_VietNamese.src.core.minio import get_object_bytes, put_object
-from Legal_VietNamese.src.core.redis import get_redis
-from Legal_VietNamese.src.db.repositories import DocumentRepo
-from Legal_VietNamese.src.ingestion.chunkers import chunk_document
-from Legal_VietNamese.src.ingestion.indexer import delete_doc_vectors, index_chunks
-from Legal_VietNamese.src.ingestion.parsers import parse_file
+from src.core.db import session_scope
+from src.core.logging import get_logger
+from src.core.minio import get_object_bytes, put_object
+from src.core.redis import get_redis
+from src.db.repositories import DocumentRepo
+from src.ingestion.chunkers import chunk_document
+from src.ingestion.indexer import delete_doc_vectors, index_chunks
+from src.ingestion.parsers import parse_file
 
 log = get_logger(__name__)
 

@@ -23,14 +23,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
-from Legal_VietNamese.src.core.db import dispose_engine
-from Legal_VietNamese.src.core.logging import get_logger, setup_logging
-from Legal_VietNamese.src.core.minio import ensure_bucket
-from Legal_VietNamese.src.core.qdrant import close_qdrant, ensure_collections
-from Legal_VietNamese.src.core.redis import close_redis
-from Legal_VietNamese.src.core.settings import get_settings
-from Legal_VietNamese.src.observability.langfuse import flush as lf_flush
-from Legal_VietNamese.src.observability.langfuse import init_langfuse
+from src.core.db import dispose_engine
+from src.core.logging import get_logger, setup_logging
+from src.core.minio import ensure_bucket
+from src.core.qdrant import close_qdrant, ensure_collections
+from src.core.redis import close_redis
+from src.core.settings import get_settings
+from src.observability.langfuse import flush as lf_flush
+from src.observability.langfuse import init_langfuse
 
 from .deps import close_arq_pool, get_arq_pool
 from .middleware.request_context import RequestContextMiddleware

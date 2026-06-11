@@ -7,15 +7,15 @@ from datetime import UTC, datetime
 
 from fastapi import APIRouter, HTTPException, Request, status
 
-from Legal_VietNamese.src.core.security import (
+from src.core.security import (
     decode_token,
     hash_password,
     issue_access,
     issue_refresh,
     verify_password,
 )
-from Legal_VietNamese.src.core.settings import get_settings
-from Legal_VietNamese.src.db.repositories import UserRepo
+from src.core.settings import get_settings
+from src.db.repositories import UserRepo
 
 from ..deps import SessionDep
 from ..schemas import (

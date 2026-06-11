@@ -9,7 +9,7 @@ from typing import Any
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from Legal_VietNamese.src.db.models import Document, DocumentChunk
+from src.db.models import Document, DocumentChunk
 
 
 class DocumentRepo:

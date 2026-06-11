@@ -10,7 +10,7 @@ from __future__ import annotations
 import asyncio
 from dataclasses import dataclass
 
-from Legal_VietNamese.src.core.logging import get_logger
+from src.core.logging import get_logger
 
 log = get_logger(__name__)
 

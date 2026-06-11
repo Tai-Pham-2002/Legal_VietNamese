@@ -17,8 +17,8 @@ from typing import Any
 
 import orjson
 
-from Legal_VietNamese.src.core.redis import get_redis
-from Legal_VietNamese.src.core.settings import get_settings
+from src.core.redis import get_redis
+from src.core.settings import get_settings
 
 
 @dataclass(slots=True)

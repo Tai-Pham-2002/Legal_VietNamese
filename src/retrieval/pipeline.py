@@ -16,13 +16,13 @@ import json
 import uuid
 from dataclasses import dataclass
 
-from Legal_VietNamese.src.core.logging import get_logger
-from Legal_VietNamese.src.core.redis import cache_get, cache_set, make_key
-from Legal_VietNamese.src.core.settings import get_settings
-from Legal_VietNamese.src.llm.client import get_llm
-from Legal_VietNamese.src.observability.langfuse import observe
+from src.core.logging import get_logger
+from src.core.redis import cache_get, cache_set, make_key
+from src.core.settings import get_settings
+from src.llm.client import get_llm
+from src.observability.langfuse import observe
 
-from .rerank import llm_rerank
+from .rerank import rerank
 from .search import SearchHit, vector_search
 
 log = get_logger(__name__)
@@ -112,8 +112,8 @@ async def retrieve_and_rerank(
         "retrieve_pool", n_queries=len(queries), n_unique=len(by_id), pool=len(pool)
     )
 
-    # rerank
-    ranked = await llm_rerank(query, pool, top_k=top_k_final)
+    # rerank (Cohere mặc định, tự fallback LLM nếu lỗi)
+    ranked = await rerank(query, pool, top_k=top_k_final)
 
     return [
         RetrievedChunk(

@@ -108,10 +108,34 @@ class LLMSettings(_Base):
     llm_timeout_s: int = 60
     llm_max_retries: int = 3
 
-    embedding_model: str = "text-embedding-004"
+    # text-embedding-004 đã bị Gemini gỡ; gemini-embedding-001 là model hiện hành.
+    # Mặc định 3072 chiều nhưng hỗ trợ rút gọn qua param `dimensions` -> giữ 768
+    # để khớp Qdrant collection (đỡ RAM, đủ tốt).
+    embedding_model: str = "gemini-embedding-001"
     embedding_dim: int = 768
     embedding_batch_size: int = 64
     embedding_timeout_s: int = 30
+
+
+class RerankSettings(_Base):
+    """Cấu hình rerank.
+
+    `rerank_provider`:
+      - "cohere": dùng Cohere Rerank API (mặc định, chất lượng cao, hỗ trợ tiếng Việt).
+      - "llm":    dùng LLM-as-reranker (Gemini Flash) — fallback khi không có Cohere.
+    Khi provider="cohere" mà gọi lỗi (timeout/quota/key sai) -> tự fallback sang "llm".
+    """
+
+    rerank_provider: Literal["cohere", "llm"] = "cohere"
+    cohere_api_key: SecretStr | None = None
+    cohere_rerank_model: str = "rerank-v3.5"
+    rerank_timeout_s: int = 20
+    rerank_max_candidates: int = 100  # giới hạn số document gửi cho Cohere/LLM
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def cohere_enabled(self) -> bool:
+        return self.rerank_provider == "cohere" and self.cohere_api_key is not None
 
 
 class LangfuseSettings(_Base):
@@ -148,6 +172,7 @@ class Settings(_Base):
     qdrant: QdrantSettings = Field(default_factory=QdrantSettings)
     minio: MinioSettings = Field(default_factory=MinioSettings)
     llm: LLMSettings = Field(default_factory=LLMSettings)
+    rerank: RerankSettings = Field(default_factory=RerankSettings)
     langfuse: LangfuseSettings = Field(default_factory=LangfuseSettings)
     security: SecuritySettings = Field(default_factory=SecuritySettings)
 

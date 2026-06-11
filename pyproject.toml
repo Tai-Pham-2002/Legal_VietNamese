@@ -41,6 +41,7 @@ dependencies = [
     "langgraph-checkpoint-postgres>=2.0.7",
     "tenacity>=9.0.0",
     "tiktoken>=0.8.0",
+    "cohere>=5.13.0",                   # rerank API (rerank-v3.5, multilingual)
 
     # ---- ingestion ----
     "pymupdf>=1.25.1",                  # parse PDF nhanh, đủ tốt cho legal doc text-only

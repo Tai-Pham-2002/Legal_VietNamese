@@ -18,7 +18,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from Legal_VietNamese.src.core.db import Base
+from src.core.db import Base
 
 from ._mixins import TimestampMixin, uuid_pk
 

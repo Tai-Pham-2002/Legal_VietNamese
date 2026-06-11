@@ -8,7 +8,7 @@ from sqlalchemy import ARRAY, Float, ForeignKey, Index, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from Legal_VietNamese.src.core.db import Base
+from src.core.db import Base
 
 from ._mixins import TimestampMixin, uuid_pk
 

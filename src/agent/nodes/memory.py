@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from Legal_VietNamese.src.memory import get_buffer, retrieve_user_facts
-from Legal_VietNamese.src.observability.langfuse import observe
+from src.memory import get_buffer, retrieve_user_facts
+from src.observability.langfuse import observe
 
 from ..state import AgentState
 

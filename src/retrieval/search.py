@@ -13,9 +13,9 @@ from typing import Any
 
 from qdrant_client.http import models as qm
 
-from Legal_VietNamese.src.core.qdrant import get_qdrant
-from Legal_VietNamese.src.core.settings import get_settings
-from Legal_VietNamese.src.llm.client import get_embedder
+from src.core.qdrant import get_qdrant
+from src.core.settings import get_settings
+from src.llm.client import get_embedder
 
 
 @dataclass(slots=True)

@@ -12,11 +12,11 @@ from arq.connections import RedisSettings
 from fastapi import Depends, Header, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from Legal_VietNamese.src.cache import RateLimitExceeded, allow_request
-from Legal_VietNamese.src.core.db import get_session
-from Legal_VietNamese.src.core.security import TokenPayload, decode_token
-from Legal_VietNamese.src.core.settings import get_settings
-from Legal_VietNamese.src.db.repositories import UserRepo
+from src.cache import RateLimitExceeded, allow_request
+from src.core.db import get_session
+from src.core.security import TokenPayload, decode_token
+from src.core.settings import get_settings
+from src.db.repositories import UserRepo
 
 
 # ----- ARQ pool singleton (1 per process) -----------------------------------

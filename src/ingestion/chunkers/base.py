@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 import tiktoken
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from Legal_VietNamese.src.ingestion.parsers import ParseResult
+from src.ingestion.parsers import ParseResult
 
 # ---- token counter (lazy) --------------------------------------------------
 _enc: tiktoken.Encoding | None = None
@@ -130,15 +130,23 @@ def chunk_document(
 
     chunks: list[Chunk] = []
     idx = 0
+    last_page: int | None = None  # trang gần nhất đã thấy, để chunk giữa 2 marker kế thừa
 
     def _emit(text: str, heading: str | None) -> None:
-        nonlocal idx
+        nonlocal idx, last_page
+        # Tính page range TỪ text của chunk này, TRƯỚC khi strip marker. Tính trên
+        # toàn bộ parsed.markdown thì mọi chunk sẽ nhận cùng range -> citation sai.
+        # Marker có thể bị splitter tách ra mảnh riêng (rồi strip thành rỗng), nên
+        # nếu chunk này không chứa marker thì kế thừa trang gần nhất (`last_page`).
+        # Cập nhật last_page TRƯỚC khi strip/return để mảnh marker-only vẫn ghi nhận.
+        pf, pt = _page_range_for(text)
+        if pt is not None:
+            last_page = pt
+        else:
+            pf = pt = last_page
         text = _strip_page_markers(text).strip()
         if not text:
             return
-        pf, pt = _page_range_for(parsed.markdown)  # default global; refined below
-        # Refine: find pages actually within this chunk's char range — đơn giản
-        # ở đây dùng heuristic chứa page marker trong window.
         chunks.append(
             Chunk(
                 index=idx,
