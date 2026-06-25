@@ -152,7 +152,7 @@ jobs:
       security-events: write  # upload Trivy SARIF to the Security tab
     steps:
       - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
 
       # Build the same runtime target the stack ships, loading it locally so we
       # can scan the exact artifact. uv.lock means `--frozen` in the Dockerfile
