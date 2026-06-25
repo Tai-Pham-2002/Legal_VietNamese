@@ -22,7 +22,7 @@ dependencies = [
     "orjson>=3.10.12",
 
     # ---- DB ----
-    "sqlalchemy[asyncio]>=2.0.36",
+    "sqlalchemy[asyncio]>=2.0.51",
     "alembic>=1.14.0",
     "asyncpg>=0.30.0",
     "psycopg[binary]>=3.2.3",           # cho langgraph postgres checkpointer (sync)
