@@ -49,18 +49,14 @@ async def chat_stream(
     summary = conv.summary
 
     # ---- persist user message + buffer ----
-    user_msg = await repo.add_message(
-        conversation_id=conv_id, role="user", content=req.message
-    )
+    user_msg = await repo.add_message(conversation_id=conv_id, role="user", content=req.message)
     await session.commit()
 
     # Đảm bảo buffer có dữ liệu — nếu Redis vừa restart, warm từ DB.
     buf = await get_buffer(conv_id)
     if not buf.messages:
         msgs = await repo.recent_messages(conversation_id=conv_id, n=20)
-        await warmup_from_db(
-            conv_id, [{"role": m.role, "content": m.content} for m in msgs]
-        )
+        await warmup_from_db(conv_id, [{"role": m.role, "content": m.content} for m in msgs])
     await append_message(conv_id, "user", req.message)
 
     arq = await get_arq_pool()

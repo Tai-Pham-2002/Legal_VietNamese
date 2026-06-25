@@ -1,0 +1,30 @@
+version: 2
+updates:
+  # Python deps via uv (reads pyproject.toml + uv.lock).
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      # Batch low-risk patch/minor bumps into one PR to cut noise.
+      python-minor-patch:
+        update-types: ["minor", "patch"]
+    labels: ["dependencies", "python"]
+
+  # Keep GitHub Actions pinned versions fresh (and patched).
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels: ["dependencies", "ci"]
+
+  # Base image bumps for the Dockerfile.
+  - package-ecosystem: "docker"
+    directory: "/docker"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels: ["dependencies", "docker"]

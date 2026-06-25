@@ -38,7 +38,7 @@ KHÔNG thêm giải thích."""
 @dataclass(slots=True)
 class RetrievedChunk:
     doc_id: str
-    chunk_id: str            # qdrant point_id
+    chunk_id: str  # qdrant point_id
     doc_title: str
     heading_path: str | None
     page_from: int | None
@@ -92,9 +92,7 @@ async def retrieve_and_rerank(
 
     # parallel search
     search_tasks = [
-        vector_search(
-            q, tenant_id=tenant_id, user_id=user_id, doc_ids=doc_ids, top_k=top_k_search
-        )
+        vector_search(q, tenant_id=tenant_id, user_id=user_id, doc_ids=doc_ids, top_k=top_k_search)
         for q in queries
     ]
     results: list[list[SearchHit]] = await asyncio.gather(*search_tasks)
@@ -108,9 +106,7 @@ async def retrieve_and_rerank(
                 by_id[h.point_id] = h
 
     pool = sorted(by_id.values(), key=lambda x: x.score, reverse=True)[: top_k_search * 2]
-    log.info(
-        "retrieve_pool", n_queries=len(queries), n_unique=len(by_id), pool=len(pool)
-    )
+    log.info("retrieve_pool", n_queries=len(queries), n_unique=len(by_id), pool=len(pool))
 
     # rerank (Cohere mặc định, tự fallback LLM nếu lỗi)
     ranked = await rerank(query, pool, top_k=top_k_final)

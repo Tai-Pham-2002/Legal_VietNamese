@@ -68,7 +68,9 @@ async def process_document(ctx: dict[str, Any], doc_id_str: str) -> dict[str, An
 
         async with session_scope() as session:
             await DocumentRepo(session).set_status(
-                doc_id, "chunking", markdown_key=markdown_key,
+                doc_id,
+                "chunking",
+                markdown_key=markdown_key,
                 meta={"parse": parsed.meta},
             )
         await _publish(doc_id, "status", {"status": "chunking"})
@@ -94,9 +96,7 @@ async def process_document(ctx: dict[str, Any], doc_id_str: str) -> dict[str, An
 
         async with session_scope() as session:
             await DocumentRepo(session).bulk_insert_chunks(orm_rows)
-            await DocumentRepo(session).set_status(
-                doc_id, "indexed", n_chunks=len(orm_rows)
-            )
+            await DocumentRepo(session).set_status(doc_id, "indexed", n_chunks=len(orm_rows))
 
         await _publish(doc_id, "status", {"status": "indexed", "n_chunks": len(orm_rows)})
         log.info("ingestion_done", doc_id=str(doc_id), n_chunks=len(orm_rows))

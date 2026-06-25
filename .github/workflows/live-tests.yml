@@ -1,0 +1,53 @@
+name: Live API tests
+
+# Tests that call the REAL Cohere + Gemini APIs (marked @pytest.mark.live).
+# They cost quota and need secrets, so they NEVER run on PRs — only nightly and
+# on demand. Keys live in the `live-tests` Environment, not in repo-wide secrets.
+
+on:
+  schedule:
+    - cron: "0 4 * * *"  # 04:00 UTC daily
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  UV_VERSION: "0.9.7"
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  live:
+    name: Live integrations
+    runs-on: ubuntu-latest
+    environment: live-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+          python-version: ${{ env.PYTHON_VERSION }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: Install deps (locked)
+        run: uv sync --frozen --dev
+
+      - name: Pytest (live)
+        env:
+          # Real keys injected from the live-tests Environment secrets.
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: |
+          if [ -z "${LLM_API_KEY}" ] || [ -z "${COHERE_API_KEY}" ]; then
+            echo "::warning::LLM_API_KEY / COHERE_API_KEY not configured — skipping live tests."
+            exit 0
+          fi
+          set +e
+          uv run pytest -m live -v
+          code=$?
+          if [ "$code" -eq 5 ]; then
+            echo "::notice::No live tests collected."
+            exit 0
+          fi
+          exit "$code"

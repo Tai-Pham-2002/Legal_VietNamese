@@ -19,7 +19,10 @@ def parse_docx(data: bytes) -> ParseResult:
     paragraphs: list[str] = []
     with zipfile.ZipFile(io.BytesIO(data)) as z:
         with z.open("word/document.xml") as f:
-            tree = ET.parse(f)
+            # NOTE(security): parses user-uploaded XML. stdlib ElementTree is used
+            # by design (no extra dep). For hardening against entity-expansion
+            # (billion-laughs) DoS, swap to `defusedxml.ElementTree.parse`.
+            tree = ET.parse(f)  # noqa: S314 — accepted risk; see note above
         for p in tree.iter(f"{{{_NS['w']}}}p"):
             texts = [t.text or "" for t in p.iter(f"{{{_NS['w']}}}t")]
             line = "".join(texts).strip()

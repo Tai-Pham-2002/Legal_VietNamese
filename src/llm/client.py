@@ -16,7 +16,13 @@ from collections import OrderedDict
 from collections.abc import AsyncIterator
 from typing import Any, Literal
 
-from openai import AsyncOpenAI
+from openai import (
+    APIConnectionError,
+    APITimeoutError,
+    AsyncOpenAI,
+    InternalServerError,
+    RateLimitError,
+)
 from openai.types.chat import ChatCompletion, ChatCompletionChunk
 from tenacity import (
     retry,
@@ -57,9 +63,22 @@ _lru_embed = _LRU(5000)
 
 
 # ---- module-level retry policy ---------------------------------------------
+# Lỗi TẠM THỜI nên retry: timeout/connection + 5xx (InternalServerError) + 429
+# (RateLimitError). Gemini hay trả 503 "high demand" lúc cao điểm — không retry
+# thì lỗi văng thẳng ra user. KHÔNG retry 4xx khác (vd 400/401) vì retry vô ích.
+_RETRYABLE = (
+    TimeoutError,
+    ConnectionError,
+    APITimeoutError,
+    APIConnectionError,
+    InternalServerError,
+    RateLimitError,
+)
+
+
 def _retry(max_attempts: int):
     return retry(
-        retry=retry_if_exception_type((TimeoutError, ConnectionError)),
+        retry=retry_if_exception_type(_RETRYABLE),
         stop=stop_after_attempt(max_attempts),
         wait=wait_exponential_jitter(initial=1, max=10),
         reraise=True,

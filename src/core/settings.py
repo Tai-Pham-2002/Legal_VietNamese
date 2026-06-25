@@ -33,7 +33,7 @@ class AppSettings(_Base):
     log_level: str = "INFO"
     service_name: str = "api"
     secret_key: SecretStr = Field(..., min_length=32)
-    api_host: str = "0.0.0.0"
+    api_host: str = "0.0.0.0"  # noqa: S104 — container binds all interfaces; Nginx is the edge
     api_port: int = 8000
     request_timeout_s: int = 60
 
@@ -76,9 +76,9 @@ class DBSettings(_Base):
 class RedisSettings(_Base):
     redis_url: str = "redis://localhost:6379/0"
     redis_max_connections: int = 50
-    cache_ttl_llm_s: int = 3600          # 1h
+    cache_ttl_llm_s: int = 3600  # 1h
     cache_ttl_embedding_s: int = 604800  # 7 ngày
-    cache_ttl_retrieval_s: int = 300     # 5 phút
+    cache_ttl_retrieval_s: int = 300  # 5 phút
     short_term_buffer_size: int = 20
     short_term_buffer_ttl_s: int = 86400  # 24h
 
@@ -147,11 +147,7 @@ class LangfuseSettings(_Base):
     @computed_field  # type: ignore[prop-decorator]
     @property
     def is_configured(self) -> bool:
-        return bool(
-            self.langfuse_enabled
-            and self.langfuse_public_key
-            and self.langfuse_secret_key
-        )
+        return bool(self.langfuse_enabled and self.langfuse_public_key and self.langfuse_secret_key)
 
 
 class SecuritySettings(_Base):

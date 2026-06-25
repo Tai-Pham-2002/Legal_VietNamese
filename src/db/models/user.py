@@ -39,9 +39,7 @@ class User(Base, TimestampMixin):
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     display_name: Mapped[str | None] = mapped_column(String(255), default=None)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    last_login_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), default=None
-    )
+    last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=None)
 
     tenant: Mapped[Tenant] = relationship(back_populates="users", init=False)
 
@@ -64,8 +62,6 @@ class RefreshToken(Base, TimestampMixin):
     )
     token_hash: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    revoked_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), default=None
-    )
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=None)
     user_agent: Mapped[str | None] = mapped_column(String(512), default=None)
     ip_address: Mapped[str | None] = mapped_column(String(45), default=None)

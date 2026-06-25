@@ -18,7 +18,6 @@ from src.core.security import TokenPayload, decode_token
 from src.core.settings import get_settings
 from src.db.repositories import UserRepo
 
-
 # ----- ARQ pool singleton (1 per process) -----------------------------------
 _arq_pool: ArqRedis | None = None
 
@@ -55,9 +54,7 @@ SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 def _bearer(authorization: str | None) -> str:
     if not authorization or not authorization.lower().startswith("bearer "):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="missing bearer token"
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="missing bearer token")
     return authorization.split(" ", 1)[1].strip()
 
 
@@ -68,13 +65,9 @@ async def current_token(
     try:
         payload = decode_token(token)
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid token"
-        ) from e
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid token") from e
     if payload.typ != "access":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="wrong token type"
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="wrong token type")
     return payload
 
 
@@ -92,9 +85,7 @@ async def current_user(
     repo = UserRepo(session)
     u = await repo.by_id(user_id)
     if u is None or not u.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="user inactive"
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="user inactive")
     return user_id, tenant_id
 
 
@@ -106,9 +97,7 @@ def rate_limit(bucket: str, limit: int, window_s: int):
     async def _dep(current: CurrentUserDep) -> None:
         user_id, _ = current
         try:
-            await allow_request(
-                str(user_id), bucket, limit=limit, window_s=window_s
-            )
+            await allow_request(str(user_id), bucket, limit=limit, window_s=window_s)
         except RateLimitExceeded as e:
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,

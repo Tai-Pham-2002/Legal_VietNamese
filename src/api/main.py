@@ -83,9 +83,9 @@ def create_app() -> FastAPI:
     app.add_middleware(RequestContextMiddleware)
 
     # Prometheus /metrics (chỉ expose nếu env != prod hoặc dùng auth khác)
-    Instrumentator(
-        excluded_handlers=["/health/live", "/health/ready", "/metrics"]
-    ).instrument(app).expose(app, endpoint="/metrics", include_in_schema=False)
+    Instrumentator(excluded_handlers=["/health/live", "/health/ready", "/metrics"]).instrument(
+        app
+    ).expose(app, endpoint="/metrics", include_in_schema=False)
 
     app.include_router(api_router)
     return app

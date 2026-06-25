@@ -155,16 +155,12 @@ async def list_files(
     offset: int = Query(0, ge=0),
 ) -> list[DocumentOut]:
     user_id, _ = current
-    items = await DocumentRepo(session).list_for_user(
-        user_id=user_id, limit=limit, offset=offset
-    )
+    items = await DocumentRepo(session).list_for_user(user_id=user_id, limit=limit, offset=offset)
     return [_doc_to_out(d) for d in items]
 
 
 @router.get("/{doc_id}", response_model=DocumentOut)
-async def get_file(
-    doc_id: uuid.UUID, current: CurrentUserDep, session: SessionDep
-) -> DocumentOut:
+async def get_file(doc_id: uuid.UUID, current: CurrentUserDep, session: SessionDep) -> DocumentOut:
     user_id, _ = current
     d = await DocumentRepo(session).get(doc_id, user_id=user_id)
     if d is None:
@@ -194,7 +190,8 @@ async def file_events(
                     continue
                 try:
                     payload = orjson.loads(msg["data"])
-                except Exception:
+                except Exception as e:
+                    log.debug("sse_bad_payload_skipped", error=str(e))
                     continue
                 yield {
                     "event": payload.get("event", "message"),

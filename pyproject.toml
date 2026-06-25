@@ -101,7 +101,13 @@ exclude = ["src/db/migrations/"]
 asyncio_mode = "auto"
 pythonpath = ["."]
 testpaths = ["tests"]
-addopts = ["-q", "--strict-markers"]
+# Mặc định chỉ chạy unit test (hermetic, mock hết IO). Bỏ qua test cần infra/mạng.
+# Chạy live/integration: pytest -m live   |   pytest -m integration
+addopts = ["-q", "--strict-markers", "-m", "not live and not integration"]
+markers = [
+    "live: gọi API thật (Cohere/Gemini) — cần key + mạng",
+    "integration: cần hạ tầng thật (postgres/redis/qdrant/minio)",
+]
 
 [build-system]
 requires = ["hatchling"]

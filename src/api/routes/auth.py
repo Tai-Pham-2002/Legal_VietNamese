@@ -29,8 +29,13 @@ from ..schemas import (
 router = APIRouter()
 
 
-def _token_pair(user_id: uuid.UUID, tenant_id: uuid.UUID, repo: UserRepo,
-                user_agent: str | None = None, ip: str | None = None) -> tuple[TokenResponse, str]:
+def _token_pair(
+    user_id: uuid.UUID,
+    tenant_id: uuid.UUID,
+    repo: UserRepo,
+    user_agent: str | None = None,
+    ip: str | None = None,
+) -> tuple[TokenResponse, str]:
     s = get_settings().security
     access, ap = issue_access(user_id, tenant_id)
     refresh, rp = issue_refresh(user_id, tenant_id)

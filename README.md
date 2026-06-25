@@ -144,6 +144,7 @@ Phase tương lai (chưa build, ưu tiên):
 15. [`docs/15-streaming-sse.md`](docs/15-streaming-sse.md) — SSE vs WS, Nginx tuning, backpressure, reconnect
 16. [`docs/16-security-deep.md`](docs/16-security-deep.md) — JWT, refresh rotation, 5-layer tenant enforcement
 17. [`docs/17-failure-modes.md`](docs/17-failure-modes.md) — mỗi component down xử lý ra sao + runbook
+22. [`docs/22-testing-guide.md`](docs/22-testing-guide.md) — chạy & viết test: unit hermetic, live (Cohere/Gemini), integration
 
 ---
 

@@ -244,10 +244,9 @@ services:
       replicas: ${API_REPLICAS:-2}
 
   worker:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-      target: runtime
+    # Dùng chung image với `api` (cùng Dockerfile, role chọn bằng command).
+    # KHÔNG khai build ở đây: tránh build song song cùng 1 tag -> lỗi
+    # "image already exists". Chỉ `api` build, worker reuse image đó.
     image: production-rag/api:${IMAGE_TAG:-latest}
     restart: unless-stopped
     command: ["worker"]
@@ -255,6 +254,7 @@ services:
       <<: *api-env
       SERVICE_NAME: worker
     depends_on:
+      api: { condition: service_started }
       postgres: { condition: service_healthy }
       redis: { condition: service_healthy }
       qdrant: { condition: service_healthy }

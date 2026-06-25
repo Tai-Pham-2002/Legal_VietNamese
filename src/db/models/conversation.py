@@ -52,9 +52,7 @@ class Conversation(Base, TimestampMixin):
 
 class Message(Base, TimestampMixin):
     __tablename__ = "messages"
-    __table_args__ = (
-        Index("ix_msg_conv_created", "conversation_id", "created_at"),
-    )
+    __table_args__ = (Index("ix_msg_conv_created", "conversation_id", "created_at"),)
 
     id: Mapped[uuid.UUID] = uuid_pk()
     conversation_id: Mapped[uuid.UUID] = mapped_column(
@@ -70,6 +68,4 @@ class Message(Base, TimestampMixin):
     tokens_out: Mapped[int | None] = mapped_column(Integer, default=None)
     latency_ms: Mapped[float | None] = mapped_column(Float, default=None)
 
-    conversation: Mapped[Conversation] = relationship(
-        back_populates="messages", init=False
-    )
+    conversation: Mapped[Conversation] = relationship(back_populates="messages", init=False)

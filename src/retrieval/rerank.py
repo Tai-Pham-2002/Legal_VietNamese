@@ -46,6 +46,7 @@ def _get_cohere() -> Any:
         )
     return _cohere_client
 
+
 RERANK_SYSTEM = """Bạn là bộ đánh giá mức độ liên quan giữa CÂU HỎI và các ĐOẠN TÀI LIỆU.
 Trả về JSON object: {"ranked": [{"id": <int>, "score": <0.0-1.0>}, ...]}
 - Sắp xếp theo score giảm dần.
@@ -81,8 +82,7 @@ async def llm_rerank(
 
     # build candidate list (truncate text để tránh token blow-up)
     candidates_text = "\n\n".join(
-        f"[{i}] {h.heading_path or h.doc_title}\n{h.text[:500]}"
-        for i, h in enumerate(hits)
+        f"[{i}] {h.heading_path or h.doc_title}\n{h.text[:500]}" for i, h in enumerate(hits)
     )
     user_msg = (
         f"CÂU HỎI: {query}\n\nDANH SÁCH ĐOẠN:\n{candidates_text}\n\n"
@@ -120,7 +120,8 @@ async def llm_rerank(
 
     if use_cache and id_to_score:
         await cache_set(
-            cache_key, {str(k): v for k, v in id_to_score.items()},
+            cache_key,
+            {str(k): v for k, v in id_to_score.items()},
             ttl_s=600,
         )
     return _materialize(hits, id_to_score, top_k)
@@ -156,17 +157,11 @@ async def cohere_rerank(
         return [RerankResult(hits[0], hits[0].score)]
 
     s = get_settings().rerank
-    cache_key = make_key(
-        "rerank", s.cohere_rerank_model, query, [h.point_id for h in hits]
-    )
+    cache_key = make_key("rerank", s.cohere_rerank_model, query, [h.point_id for h in hits])
     if use_cache and (cached := await cache_get(cache_key)):
-        return _materialize(
-            hits, {int(k): float(v) for k, v in cached.items()}, top_k
-        )
+        return _materialize(hits, {int(k): float(v) for k, v in cached.items()}, top_k)
 
-    documents = [
-        f"{h.heading_path or h.doc_title}\n{h.text}"[:_COHERE_DOC_MAX_CHARS] for h in hits
-    ]
+    documents = [f"{h.heading_path or h.doc_title}\n{h.text}"[:_COHERE_DOC_MAX_CHARS] for h in hits]
 
     co = _get_cohere()
     # top_n = toàn bộ candidate: Cohere tính phí theo SỐ document (không theo top_n),
@@ -185,9 +180,7 @@ async def cohere_rerank(
             id_to_score[idx] = float(r.relevance_score)
 
     if use_cache and id_to_score:
-        await cache_set(
-            cache_key, {str(k): v for k, v in id_to_score.items()}, ttl_s=600
-        )
+        await cache_set(cache_key, {str(k): v for k, v in id_to_score.items()}, ttl_s=600)
     return _materialize(hits, id_to_score, top_k)
 
 

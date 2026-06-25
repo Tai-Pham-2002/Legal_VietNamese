@@ -15,7 +15,7 @@ import uuid
 from src.core.redis import get_redis
 
 
-class RateLimitExceeded(Exception):
+class RateLimitExceeded(Exception):  # noqa: N818 — deliberate domain name, not an *Error
     def __init__(self, retry_after_s: float):
         self.retry_after_s = retry_after_s
         super().__init__(f"rate limit exceeded, retry after {retry_after_s:.1f}s")

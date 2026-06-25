@@ -48,9 +48,7 @@ async def ensure_bucket() -> None:
     await asyncio.to_thread(_ensure)
 
 
-async def put_object(
-    key: str, data: bytes, content_type: str = "application/octet-stream"
-) -> None:
+async def put_object(key: str, data: bytes, content_type: str = "application/octet-stream") -> None:
     s = get_settings().minio
     c = get_minio()
 

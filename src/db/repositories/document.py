@@ -48,9 +48,7 @@ class DocumentRepo:
         """Worker dùng — không filter user_id."""
         return await self.s.get(Document, doc_id)
 
-    async def by_checksum(
-        self, *, tenant_id: uuid.UUID, checksum: str
-    ) -> Document | None:
+    async def by_checksum(self, *, tenant_id: uuid.UUID, checksum: str) -> Document | None:
         q = select(Document).where(
             Document.tenant_id == tenant_id, Document.checksum_sha256 == checksum
         )
@@ -96,9 +94,7 @@ class DocumentRepo:
         self.s.add_all(chunks)
         await self.s.flush()
 
-    async def get_chunks_by_ids(
-        self, chunk_ids: list[uuid.UUID]
-    ) -> list[DocumentChunk]:
+    async def get_chunks_by_ids(self, chunk_ids: list[uuid.UUID]) -> list[DocumentChunk]:
         if not chunk_ids:
             return []
         q = select(DocumentChunk).where(DocumentChunk.id.in_(chunk_ids))

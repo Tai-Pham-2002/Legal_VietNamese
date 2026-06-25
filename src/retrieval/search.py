@@ -52,9 +52,7 @@ async def vector_search(
         qm.FieldCondition(key="tenant_id", match=qm.MatchValue(value=str(tenant_id))),
     ]
     if user_id is not None:
-        must.append(
-            qm.FieldCondition(key="user_id", match=qm.MatchValue(value=str(user_id)))
-        )
+        must.append(qm.FieldCondition(key="user_id", match=qm.MatchValue(value=str(user_id))))
     if doc_ids:
         must.append(
             qm.FieldCondition(

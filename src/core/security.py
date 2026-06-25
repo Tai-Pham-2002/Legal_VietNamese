@@ -32,10 +32,10 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 
 class TokenPayload(BaseModel):
-    sub: str                            # user_id
-    tid: str                            # tenant_id
+    sub: str  # user_id
+    tid: str  # tenant_id
     typ: Literal["access", "refresh"]
-    jti: str                            # token id (cho revoke)
+    jti: str  # token id (cho revoke)
     exp: int
     iat: int
 

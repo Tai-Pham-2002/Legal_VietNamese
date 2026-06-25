@@ -67,6 +67,7 @@ def observe(name: str | None = None) -> Callable[[Callable[..., Any]], Callable[
 
     def decorator(fn: Callable[..., Any]) -> Callable[..., Any]:
         if not (iscoroutinefunction(fn) or isasyncgenfunction(fn)):
+
             @wraps(fn)
             def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
                 wrapped = _maybe_wrap(fn, name)
@@ -104,8 +105,9 @@ def trace_metadata(**kwargs: Any) -> None:
         from langfuse.decorators import langfuse_context  # type: ignore[import-untyped]
 
         langfuse_context.update_current_observation(metadata=kwargs)
-    except Exception:
-        pass
+    except Exception as e:
+        # Observability phải không bao giờ làm crash request -> chỉ log debug.
+        log.debug("langfuse_trace_metadata_failed", error=str(e))
 
 
 def trace_score(name: str, value: float, comment: str | None = None) -> None:
@@ -115,8 +117,8 @@ def trace_score(name: str, value: float, comment: str | None = None) -> None:
         from langfuse.decorators import langfuse_context  # type: ignore[import-untyped]
 
         langfuse_context.score_current_observation(name=name, value=value, comment=comment)
-    except Exception:
-        pass
+    except Exception as e:
+        log.debug("langfuse_trace_score_failed", error=str(e))
 
 
 # Wrap helper: cung cấp 1 decorator để inline trace 1 LLM call thủ công
@@ -140,5 +142,5 @@ def manual_generation(
             usage=usage,
             metadata=metadata,
         )
-    except Exception:
-        pass
+    except Exception as e:
+        log.debug("langfuse_manual_generation_failed", error=str(e))

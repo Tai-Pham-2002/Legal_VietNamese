@@ -89,8 +89,6 @@ class DocumentChunk(Base, TimestampMixin):
     heading_path: Mapped[str | None] = mapped_column(String(1024), default=None)
     page_from: Mapped[int | None] = mapped_column(Integer, default=None)
     page_to: Mapped[int | None] = mapped_column(Integer, default=None)
-    qdrant_point_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), default=None
-    )
+    qdrant_point_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), default=None)
 
     document: Mapped[Document] = relationship(back_populates="chunks", init=False)

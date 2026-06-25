@@ -39,6 +39,4 @@ class UserFact(Base, TimestampMixin):
     source_message_ids: Mapped[list[uuid.UUID]] = mapped_column(
         ARRAY(UUID(as_uuid=True)), default_factory=list
     )
-    qdrant_point_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), default=None
-    )
+    qdrant_point_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), default=None)

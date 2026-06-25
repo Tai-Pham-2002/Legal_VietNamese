@@ -1,0 +1,120 @@
+name: CD
+
+# Build, scan, sign and publish the container image — then (optionally) deploy.
+#  - push to main         → publish :latest + :sha-<commit>  (continuous delivery)
+#  - push tag vX.Y.Z      → publish semver tags + run the gated deploy job
+#
+# The image is identical to CI's build target; here it is pushed to GHCR with
+# SBOM + provenance attestations and a keyless cosign signature.
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+# Never cancel a publish mid-flight.
+concurrency:
+  group: cd-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-push:
+    name: Build, sign & push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write       # push to GHCR
+      id-token: write        # OIDC: cosign keyless signing + build provenance
+      attestations: write    # SBOM / provenance attestations
+    outputs:
+      image: ${{ steps.img.outputs.name }}
+      digest: ${{ steps.build.outputs.digest }}
+      version: ${{ steps.meta.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # GHCR requires a lowercase repository path; github.repository may not be.
+      - name: Compute lowercase image name
+        id: img
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Derive tags & labels
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.img.outputs.name }}
+          tags: |
+            type=sha,format=long
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build & push
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile
+          target: runtime
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: true   # SLSA build provenance attestation
+          sbom: true         # SBOM attestation
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+      - name: Sign image (keyless, by digest)
+        env:
+          IMAGE: ${{ steps.img.outputs.name }}
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: cosign sign --yes "${IMAGE}@${DIGEST}"
+
+  # ---------------------------------------------------------------------------
+  # Deploy only on a version tag, through a protected GitHub Environment so you
+  # can require manual approval + scope deploy secrets to this job alone.
+  deploy:
+    name: Deploy (production)
+    needs: build-push
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      # url: https://your-domain.example
+    steps:
+      - name: Deployment summary
+        run: |
+          echo "Image:  ${{ needs.build-push.outputs.image }}"
+          echo "Digest: ${{ needs.build-push.outputs.digest }}"
+          echo "Version: ${{ needs.build-push.outputs.version }}"
+      # --- Wire ONE of the following to your host (see docs/23-cicd.md §7) -----
+      # Option A — Docker host over SSH (pull-by-digest + recreate):
+      #   - uses: appleboy/ssh-action@v1
+      #     with:
+      #       host: ${{ secrets.DEPLOY_HOST }}
+      #       username: ${{ secrets.DEPLOY_USER }}
+      #       key: ${{ secrets.DEPLOY_SSH_KEY }}
+      #       script: |
+      #         cd /opt/legal-rag
+      #         export IMAGE_TAG=${{ needs.build-push.outputs.version }}
+      #         docker compose pull api worker
+      #         docker compose up -d api worker   # entrypoint runs migrations
+      #
+      # Option B — Kubernetes:
+      #   - run: kubectl set image deploy/api api=${{ needs.build-push.outputs.image }}@${{ needs.build-push.outputs.digest }}
+      - name: Placeholder (no deploy target configured yet)
+        run: echo "::notice::Configure a deploy target in docs/23-cicd.md §7."

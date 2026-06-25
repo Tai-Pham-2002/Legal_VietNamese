@@ -26,9 +26,7 @@ class ConversationRepo:
         return c
 
     async def get(self, conv_id: uuid.UUID, *, user_id: uuid.UUID) -> Conversation | None:
-        q = select(Conversation).where(
-            Conversation.id == conv_id, Conversation.user_id == user_id
-        )
+        q = select(Conversation).where(Conversation.id == conv_id, Conversation.user_id == user_id)
         return (await self.s.execute(q)).scalar_one_or_none()
 
     async def list_for_user(
@@ -92,9 +90,7 @@ class ConversationRepo:
         await self.s.flush()
         return m
 
-    async def messages(
-        self, *, conversation_id: uuid.UUID, limit: int = 50
-    ) -> list[Message]:
+    async def messages(self, *, conversation_id: uuid.UUID, limit: int = 50) -> list[Message]:
         q = (
             select(Message)
             .where(Message.conversation_id == conversation_id)
@@ -103,9 +99,7 @@ class ConversationRepo:
         )
         return list((await self.s.execute(q)).scalars().all())
 
-    async def recent_messages(
-        self, *, conversation_id: uuid.UUID, n: int
-    ) -> list[Message]:
+    async def recent_messages(self, *, conversation_id: uuid.UUID, n: int) -> list[Message]:
         """N message gần nhất, theo thứ tự cũ -> mới (cho prompt)."""
         q = (
             select(Message)
