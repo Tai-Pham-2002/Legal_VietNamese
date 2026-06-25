@@ -55,7 +55,7 @@ dependencies = [
     "prometheus-fastapi-instrumentator>=7.0.0",
 
     # ---- auth ----
-    "pyjwt[crypto]>=2.10.1",
+    "pyjwt[crypto]>=2.13.0",
     "passlib[bcrypt]>=1.7.4",
     "argon2-cffi>=23.1.0",
 
