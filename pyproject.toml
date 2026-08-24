@@ -8,22 +8,22 @@ authors = [{ name = "tai.pham" }]
 
 dependencies = [
     # ---- web framework ----
-    "fastapi>=0.115.5",
+    "fastapi>=0.141.1",
     "uvicorn[standard]>=0.32.1",
-    "gunicorn>=23.0.0",
+    "gunicorn>=26.1.0",
     "python-multipart>=0.0.20",        # form/file upload
-    "sse-starlette>=2.1.3",            # SSE helper
+    "sse-starlette>=3.4.8",            # SSE helper
     "httpx>=0.28.1",
 
     # ---- data validation / settings ----
     "pydantic>=2.10.3",
-    "pydantic-settings>=2.7.0",
+    "pydantic-settings>=2.15.0",
     "email-validator>=2.2.0",
-    "orjson>=3.10.12",
+    "orjson>=3.12.0",
 
     # ---- DB ----
     "sqlalchemy[asyncio]>=2.0.36",
-    "alembic>=1.14.0",
+    "alembic>=1.19.1",
     "asyncpg>=0.30.0",
     "psycopg[binary]>=3.2.3",           # cho langgraph postgres checkpointer (sync)
 
@@ -32,27 +32,27 @@ dependencies = [
     "arq>=0.26.3",
 
     # ---- vector / object storage ----
-    "qdrant-client>=1.12.1",
+    "qdrant-client>=1.19.0",
     "minio>=7.2.10",
 
     # ---- LLM / agent ----
     "openai>=1.57.4",                   # gọi Gemini qua OpenAI-compat
-    "langgraph>=0.2.60",
-    "langgraph-checkpoint-postgres>=2.0.7",
+    "langgraph>=1.2.11",
+    "langgraph-checkpoint-postgres>=3.1.2",
     "tenacity>=9.0.0",
-    "tiktoken>=0.8.0",
-    "cohere>=5.13.0",                   # rerank API (rerank-v3.5, multilingual)
+    "tiktoken>=0.14.0",
+    "cohere>=7.0.9",                   # rerank API (rerank-v3.5, multilingual)
 
     # ---- ingestion ----
-    "pymupdf>=1.25.1",                  # parse PDF nhanh, đủ tốt cho legal doc text-only
-    "pypdf>=5.1.0",                     # fallback parser
+    "pymupdf>=1.28.2",                  # parse PDF nhanh, đủ tốt cho legal doc text-only
+    "pypdf>=6.16.1",                     # fallback parser
     "python-magic>=0.4.27",             # detect mime
     "langchain-text-splitters>=0.3.4",  # fallback chunker
 
     # ---- observability ----
-    "langfuse>=2.59.0",
+    "langfuse>=4.14.4",
     "structlog>=24.4.0",
-    "prometheus-fastapi-instrumentator>=7.0.0",
+    "prometheus-fastapi-instrumentator>=8.1.0",
 
     # ---- auth ----
     "pyjwt[crypto]>=2.10.1",
@@ -66,12 +66,12 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "pytest>=8.3.4",
+    "pytest>=9.1.1",
     "pytest-asyncio>=0.24.0",
     "pytest-cov>=6.0.0",
     "respx>=0.21.1",
-    "ruff>=0.8.4",
-    "mypy>=1.13.0",
+    "ruff>=0.16.4",
+    "mypy>=2.3.1",
     "types-redis>=4.6.0",
     "testcontainers[postgres,redis]>=4.9.0",
 ]
